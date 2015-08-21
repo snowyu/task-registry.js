@@ -1,0 +1,77 @@
+{
+  "name": "task-registry",
+  "description": "The Abstract Resource File Class. Each resource could have many custom attributes. These attributes could be a front-matter block in the same file, or as a separate configuration file exists.",
+  "version": "0.0.0",
+  "homepage": "https://github.com/snowyu/task-registry.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/snowyu/task-registry.js.git"
+  },
+  "main": "./index",
+  "files": [
+    "README.md",
+    "LICENSE-MIT",
+    "*.js",
+    "*.coffee",
+    "test",
+    "src",
+    "lib"
+  ],
+  "keywords": [
+    "task",
+    "registry",
+    "collection",
+    "factory",
+    "abstract",
+    "class",
+    "klass"
+  ],
+  "dependencies": {
+    "custom-factory": "^1.4.2",
+    "install": "^0.1.8"
+  },
+  "devDependencies": {
+    "chai": "~3.2.0",
+    "coffee-coverage": "^0.6.3",
+    "grunt": "~0.4.5",
+    "grunt-contrib-clean": "~0.6.0",
+    "grunt-contrib-coffee": "~0.12.0",
+    "grunt-contrib-copy": "~0.7.0",
+    "grunt-contrib-watch": "~0.6.1",
+    "grunt-mocha-test": "~0.12.6",
+    "grunt-newer": "~0.8.0",
+    "grunt-release": "~0.9.0",
+    "istanbul": "^0.3.18",
+    "mocha": "~2.1.0",
+    "pre-commit": "~1.1.1",
+    "rimraf": "~2.2.8",
+    "shasum": "1.0.0",
+    "sinon": "~1.16.1",
+    "sinon-chai": "~2.8.0"
+  },
+  "scripts": {
+    "test": "grunt test",
+    "test-cov": "mocha --reporter dot && istanbul report text-summary lcovonly"
+  },
+  "contributors": [
+    {
+      "name": "Riceball LEE",
+      "email": "snowyu.lee@gmail.com",
+      "url": "https://github.com/snowyu"
+    }
+  ],
+  "maintainers": [
+    {
+      "name": "Riceball LEE",
+      "email": "snowyu.lee@gmail.com"
+    }
+  ],
+  "pre-commit": [
+    "test"
+  ],
+  "bugs": {
+    "url": "https://github.com/snowyu/task-registry.js/issues"
+  },
+  "license": "MIT",
+  "stability": "unstable"
+}
