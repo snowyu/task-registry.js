@@ -1,6 +1,6 @@
 {
   "name": "task-registry",
-  "description": "The Abstract Resource File Class. Each resource could have many custom attributes. These attributes could be a front-matter block in the same file, or as a separate configuration file exists.",
+  "description": "The task registry collects tasks to execute synchronously or asynchronously.",
   "version": "0.0.0",
   "homepage": "https://github.com/snowyu/task-registry.js",
   "repository": {
