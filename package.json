@@ -27,8 +27,7 @@
     "klass"
   ],
   "dependencies": {
-    "custom-factory": "^1.4.2",
-    "install": "^0.1.8"
+    "custom-factory": "^1.4.2"
   },
   "devDependencies": {
     "chai": "~3.2.0",
