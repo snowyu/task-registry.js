@@ -134,11 +134,6 @@ assert.equal(abcTask, Task('/simple/a2'));
 ```
 ## API
 
-Note:
-
-* The 'root' task will holds all the registered tasks.
-* The 'non-root' task will holds the tasks which registered to it.
-
 * class/static methods
   * `register(aTaskClass[[, aParentClass=Task], aOptions])`: register the `aTaskClass` to the Task registry.
     * `aOptions` *(object|string)*: It will use the aOptions as default options to create instance.
@@ -174,6 +169,11 @@ Note:
       2. pass the `aOptions` object argument to the `_executeSync` method
     * `aName` *(string)*: execute the specified task if any, defaults to itself.
 
+
+Note:
+
+* The 'root' task will holds all the registered tasks.
+* The 'non-root' task will holds the tasks which registered to it.
 
 ## TODO
 
