@@ -39,6 +39,10 @@ class SimpleTask
 class AbcTask
   register AbcTask, SimpleTask
 
+class A2Task
+  SimpleTask.register A2Task
+  _executeSync: (aOptions)-> 'a2:' + super aOptions
+
 describe 'Task', ->
   beforeEach ->SimpleTask::_executeSync.reset()
 
@@ -58,6 +62,10 @@ describe 'Task', ->
       assert.equal result, r2
       assert.equal result, r3
       expect(result).be.instanceOf AbcTask
+      result = SimpleTask 'A2'
+      r2 = RootTask 'Simple/A2'
+      assert.equal result, r2
+      expect(result).be.instanceOf A2Task
     it 'should get task via instance', ->
       root = Task 'Root'
       simple = root.get 'Simple'
@@ -94,6 +102,20 @@ describe 'Task', ->
       expect(SimpleTask::_executeSync).be.calledOnce
       expect(SimpleTask::_executeSync).be.calledWith one:1, two:2
       expect(result).be.equal 2
+    it 'should run a specified task', ->
+      task = Task 'Simple'
+      expect(task).be.instanceOf SimpleTask
+      result = task.executeSync('A2')
+      expect(SimpleTask::_executeSync).be.calledOnce
+      expect(SimpleTask::_executeSync).be.calledWith one:1
+      expect(result).be.equal 'a2:2'
+    it 'should run a specified task with options', ->
+      task = Task 'Simple'
+      expect(task).be.instanceOf SimpleTask
+      result = task.executeSync(two:2, 'A2')
+      expect(SimpleTask::_executeSync).be.calledOnce
+      expect(SimpleTask::_executeSync).be.calledWith one:1, two:2
+      expect(result).be.equal 'a2:2'
 
   describe 'execute', ->
     it 'should run the simple task via default', (done)->
@@ -128,4 +150,23 @@ describe 'Task', ->
           expect(SimpleTask::_executeSync).be.calledWith one:1, two:2
           expect(result).be.equal 2
         done(err)
+    it 'should run a specified task', (done)->
+      task = Task 'Simple'
+      expect(task).be.instanceOf SimpleTask
+      task.execute 'A2', (err, result)->
+        unless err
+          expect(SimpleTask::_executeSync).be.calledOnce
+          expect(SimpleTask::_executeSync).be.calledWith one:1
+          expect(result).be.equal 'a2:2'
+        done(err)
+    it 'should run a specified task with options', (done)->
+      task = Task 'Simple'
+      expect(task).be.instanceOf SimpleTask
+      task.execute two:2, 'A2', (err, result)->
+        unless err
+          expect(SimpleTask::_executeSync).be.calledOnce
+          expect(SimpleTask::_executeSync).be.calledWith one:1, two:2
+          expect(result).be.equal 'a2:2'
+        done(err)
+
 

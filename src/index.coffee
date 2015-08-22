@@ -3,6 +3,7 @@ propertyManager = require 'property-manager/ability'
 isInheritedFrom = require 'inherits-ex/lib/isInheritedFrom'
 setImmediate    = setImmediate || process.nextTick
 isFunction      = (arg)->typeof arg == 'function'
+isString        = (arg)->typeof arg == 'string'
 
 module.exports  = class Task
   factory Task
@@ -51,13 +52,26 @@ module.exports  = class Task
         result = @executeSync aOptions
       catch err
       done err, result
-  executeSync: (aOptions)->
-    aOptions = @mergeTo(aOptions)
-    @_executeSync(aOptions)
-  execute: (aOptions, done)->
-    if isFunction aOptions
+  executeSync: (aOptions, aName)->
+    if arguments.length is 1 and isString aOptions
+      aName = aOptions
+      aOptions = null
+    vTask = if aName then @get(aName) else @
+    aOptions = vTask.mergeTo(aOptions)
+    vTask._executeSync(aOptions)
+  execute: (aOptions, aName, done)->
+    if arguments.length is 1
       done = aOptions
       aOptions = null
-    aOptions = @mergeTo(aOptions)
-    @_execute(aOptions, done)
+    else if arguments.length is 2
+      done = aName
+      if isString aOptions
+        aName = aOptions
+        aOptions = null
+      else
+        aName = null
+
+    vTask = if aName then @get(aName) else @
+    aOptions = vTask.mergeTo(aOptions)
+    vTask._execute(aOptions, done)
 
