@@ -12,9 +12,15 @@ Task            = require '../src'
 register        = Task.register
 aliases         = Task.aliases
 
+class RootTask
+  register RootTask
+  aliases RootTask, 'Root', 'root'
+
+  constructor: -> return super
+
 class SimpleTask
-  register SimpleTask
-  aliases SimpleTask, 'simple', 'single'
+  register SimpleTask, RootTask
+  aliases SimpleTask, 'Simple', 'single'
 
   constructor: -> return super
 
@@ -30,9 +36,28 @@ class SimpleTask
   # the default is used `executeSync` to execute asynchronously.
   #execute: (aOptions, done)->
 
+class AbcTask
+  register AbcTask, SimpleTask
 
 describe 'Task', ->
   beforeEach ->SimpleTask::_executeSync.reset()
+
+  describe 'path', ->
+    it 'should get path() correctly', ->
+      expect(RootTask::path()).be.equal '/Root'
+      expect(SimpleTask::path()).be.equal '/Root/Simple'
+    it 'should get registerd name correctly', ->
+      expect(RootTask::name).be.equal '/Root'
+      expect(SimpleTask::name).be.equal '/Root/Simple'
+
+  describe 'getTask', ->
+    it 'should get task correctly', ->
+      result = SimpleTask 'Abc'
+      r2 = RootTask 'Simple/Abc'
+      r3 = Task 'Root/Simple/Abc'
+      assert.equal result, r2
+      assert.equal result, r3
+      expect(result).be.instanceOf AbcTask
 
   describe 'executeSync', ->
     it 'should run the simple task via default', ->
