@@ -22,6 +22,7 @@ The hierarchical task registry collects tasks to execute synchronously or asynch
 Task      = require 'task-registry'
 register  = Task.register
 aliases   = Task.aliases
+defineProperties = Task.defineProperties
 
 class SimpleTask
   register SimpleTask # the registered name is 'Simple'(excludes 'Task')
@@ -29,7 +30,7 @@ class SimpleTask
   constructor: -> return super
 
   # (optional) define attributes of this task
-  Task.defineProperties SimpleTask,
+  defineProperties SimpleTask,
     one:
       type: 'Number'
       value: 1 # the default value of the attribute.
@@ -60,6 +61,7 @@ the following is javascript:
 var Task = require('task-registry');
 var register = Task.register;
 var aliases = Task.aliases;
+var defineProperties = Task.defineProperties
 
 //the class SimpleTask
 function SimpleTask() {
@@ -69,7 +71,7 @@ function SimpleTask() {
 register(SimpleTask);
 aliases(SimpleTask, 'simple', 'single');
 
-Task.defineProperties(SimpleTask, {
+defineProperties(SimpleTask, {
   one: {
     type: 'Number',
     value: 1
