@@ -100,16 +100,16 @@ result = simpleTask.executeSync({
 assert.equal(result, 6);
 ```
 
-
-
 the hierarchical task:
 
 ```coffee
 class A1Task
   register A1Task, SimpleTask # register the A1Task to the SimpleTask
+  #or SimpleTask.register A1Task
 
 class A2Task
   register A2Task, SimpleTask # register the A2Task to the SimpleTask
+  #or SimpleTask.register A2Task
 
 a1Task = SimpleTask 'a1' # or simpleTask.get('a1')
 assert.equal abcTask, Task '/simple/a1'
@@ -134,10 +134,45 @@ assert.equal(abcTask, Task('/simple/a2'));
 ```
 ## API
 
-* register(aCtor[[, aParentCtor], aOptions])
-* aliases(aCtor, aliases...)
-* constructor(aName, aOptions)
-* forEach(callback): callback(value, name)
+Note:
+
+* The 'root' task will holds all the registered tasks.
+* The 'non-root' task will holds the tasks which registered to it.
+
+* class/static methods
+  * `register(aTaskClass[[, aParentClass=Task], aOptions])`: register the `aTaskClass` to the Task registry.
+    * `aOptions` *(object|string)*: It will use the aOptions as default options to create instance.
+      * it is the customized registered name if aOptions is string.
+      * `name`: use the name instead of the class name to register if any.
+        or it will use the class name(remove the last factory name if exists) to register.
+      * `createOnDemand` *(boolean)*: create the task item instance on demand
+        or create it immediately. defaults to true.
+  * `unregister(aName|aClass)`: unregister the class or name from the Task registry.
+  * `alias/aliases(aClass, aliases...)`: create aliases to the `aClass`.
+  * `constructor(aName, aOptions)`: get a singleton task instance.
+  * `constructor(aOptions)`: get a singleton task instance.
+    * aOptions: *(object)*
+      * name: the task item name. defaults to the constructor's name
+  * `constructor(aInstance, aOptions)`: apply(re-initialize) the aOptions to the task `aInstance`.
+  * `create(aName, aOptions)`: create a new task instance always.
+  * `get(aName, aOptions)`: get the singleton task instance via `aName` and apply(re-initialize) the aOptions to the task.
+  * `forEach(callback)`: iterate all the singleton task instances to callback.
+    * `callback` *function(instance, name)*
+* instance methods
+  * `get(aName, aOptions)`: get the singleton task instance via `aName` and apply(re-initialize) the aOptions to the task.
+  * `register(aClass[, aOptions])`: register a class to itself.
+  * `unregister(aName|aClass)`: same as the unregister class/static method.
+  * `execute([aOptions][, aName=this.name], callback)`: execute the task asynchronously.
+    * `aOptions` *(object)*:
+      1. apply the default value of the task to the `aOptions`
+      2. pass the aOptions object argument to the `_execute` method
+    * `aName` *(string)*: execute the specified task if any, defaults to itself.
+    * `callback` *function(error, result)*
+  * `executeSync([aOptions][, aName=this.name])`: execute the task synchronously and return the result.
+    * `aOptions` *(object)*:
+      1. apply the default value of the task to the `aOptions`
+      2. pass the `aOptions` object argument to the `_executeSync` method
+    * `aName` *(string)*: execute the specified task if any, defaults to itself.
 
 
 ## TODO
