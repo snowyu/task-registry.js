@@ -14,6 +14,7 @@ The hierarchical task registry collects tasks to execute synchronously or asynch
 * It could get a task via name.
 * It could execute a task synchronously or asynchronously.
 * It could be hierarchical tasks.
+* It could iterate all tasks via forEach.
 
 ## Usage
 
@@ -110,7 +111,7 @@ class A1Task
 class A2Task
   register A2Task, SimpleTask # register the A2Task to the SimpleTask
 
-a1Task = SimpleTask 'a1'
+a1Task = SimpleTask 'a1' # or simpleTask.get('a1')
 assert.equal abcTask, Task '/simple/a1'
 a2Task = SimpleTask 'a2'
 assert.equal abcTask, Task '/simple/a2'
@@ -132,6 +133,12 @@ var a2Task = SimpleTask('a2');
 assert.equal(abcTask, Task('/simple/a2'));
 ```
 ## API
+
+* register(aCtor[[, aParentCtor], aOptions])
+* aliases(aCtor, aliases...)
+* constructor(aName, aOptions)
+* forEach(callback): callback(value, name)
+
 
 ## TODO
 
