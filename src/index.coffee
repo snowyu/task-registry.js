@@ -31,9 +31,13 @@ module.exports  = class Task
   @get: (aName, aOptions)->
     result = Task._get(aName, aOptions)
     unless result or aName[0] is '/'
-      vParent = Task.getParentTaskClass()
-      if vParent
-        s = vParent::path()
+      if @ instanceof Task
+        s = @path()
+      else
+        vParent = Task.getParentTaskClass()
+        if vParent
+          s = vParent::path()
+      if s
         s += '/' if s[s.length-1] isnt '/'
         result = Task._get(s+aName, aOptions)
     result

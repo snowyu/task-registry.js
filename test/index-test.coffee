@@ -58,6 +58,14 @@ describe 'Task', ->
       assert.equal result, r2
       assert.equal result, r3
       expect(result).be.instanceOf AbcTask
+    it 'should get task via instance', ->
+      root = Task 'Root'
+      simple = root.get 'Simple'
+      expect(simple).be.instanceOf SimpleTask
+      result = root.get 'Simple/Abc'
+      expect(result).be.instanceOf AbcTask
+      result = simple.get 'Abc'
+      expect(result).be.instanceOf AbcTask
 
   describe 'executeSync', ->
     it 'should run the simple task via default', ->
