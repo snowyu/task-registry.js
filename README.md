@@ -142,6 +142,9 @@ the derived task should overwrite these methods to execute a task:
 * `_execute(aOptions, callback)`: execute asynchronously (optional).
   * It will call `_executeSync` to execute asynchronously if not exists.
 
+
+### Methods
+
 * class/static methods
   * `register(aTaskClass[[, aParentClass=Task], aOptions])`: register the `aTaskClass` to the Task registry.
     * `aOptions` *(object|string)*: It will use the aOptions as default options to create instance.
