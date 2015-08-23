@@ -113,10 +113,10 @@ class A2Task
   register A2Task, SimpleTask # register the A2Task to the SimpleTask
   #or SimpleTask.register A2Task
 
-a1Task = SimpleTask 'a1' # or simpleTask.get('a1')
-assert.equal abcTask, Task '/simple/a1'
-a2Task = SimpleTask 'a2'
-assert.equal abcTask, Task '/simple/a2'
+a1Task = SimpleTask 'A1' # or simpleTask.get('A1')
+assert.equal abcTask, Task '/Simple/A1'
+a2Task = SimpleTask 'A2'
+assert.equal abcTask, Task '/Simple/A2'
 ```
 
 the following is javacript:
@@ -128,13 +128,19 @@ register(A1Task, SimpleTask);
 function A2Task() {}
 register(A2Task, SimpleTask);
 
-var a1Task = SimpleTask('a1');
-assert.equal(abcTask, Task('/simple/a1'));
+var a1Task = SimpleTask('A1');
+assert.equal(abcTask, Task('/Simple/A1'));
 
-var a2Task = SimpleTask('a2');
-assert.equal(abcTask, Task('/simple/a2'));
+var a2Task = SimpleTask('A2');
+assert.equal(abcTask, Task('/Simple/A2'));
 ```
 ## API
+
+the derived task should overwrite these methods to execute a task:
+
+* `_executeSync(aOptions)`: execute synchronously.
+* `_execute(aOptions, callback)`: execute asynchronously (optional).
+  * It will call `_executeSync` to execute asynchronously if not exists.
 
 * class/static methods
   * `register(aTaskClass[[, aParentClass=Task], aOptions])`: register the `aTaskClass` to the Task registry.
