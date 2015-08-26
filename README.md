@@ -11,10 +11,13 @@ The hierarchical task registry collects tasks to execute synchronously or asynch
 * It could register a task.
 * It could define the attributes of the task.
 * It chould set/change the attributes' default value of the task.
-* It could get a task via name.
+* It could get a task via path name or relative name.
 * It could execute a task synchronously or asynchronously.
 * It could be hierarchical tasks.
 * It could iterate all tasks via forEach.
+
+
+Note: the registered name is case-sensitive.
 
 ## Usage
 
@@ -25,7 +28,7 @@ aliases   = Task.aliases
 defineProperties = Task.defineProperties
 
 class SimpleTask
-  register SimpleTask # the registered name is 'Simple'(excludes 'Task')
+  register SimpleTask # the registered name is '/Simple'(excludes 'Task')
   aliases SimpleTask, 'simple', 'single'
   constructor: -> return super
 
@@ -183,8 +186,8 @@ the derived task should overwrite these methods to execute a task:
 
 Note:
 
-* The 'root' task will holds all the registered tasks.
-* The 'non-root' task will holds the tasks which registered to it.
+* The Task Factory('root') will hold all the registered tasks.
+* The 'non-root' task will hold the tasks which registered to it.
 
 ## TODO
 
