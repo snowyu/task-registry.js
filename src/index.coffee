@@ -49,7 +49,7 @@ module.exports  = class Task
   _execute: (aOptions, done)->
     setImmediate =>
       try
-        result = @executeSync aOptions
+        result = @_executeSync aOptions
       catch err
       done err, result
   executeSync: (aOptions, aName)->
@@ -57,7 +57,7 @@ module.exports  = class Task
       aName = aOptions
       aOptions = null
     vTask = if aName then @get(aName) else @
-    aOptions = vTask.mergeTo(aOptions)
+    aOptions = vTask.mergeTo(aOptions) if !aOptions? or typeof aOptions == 'object'
     vTask._executeSync(aOptions)
   execute: (aOptions, aName, done)->
     if arguments.length is 1
@@ -72,6 +72,6 @@ module.exports  = class Task
         aName = null
 
     vTask = if aName then @get(aName) else @
-    aOptions = vTask.mergeTo(aOptions)
+    aOptions = vTask.mergeTo(aOptions) if !aOptions? or typeof aOptions == 'object'
     vTask._execute(aOptions, done)
 

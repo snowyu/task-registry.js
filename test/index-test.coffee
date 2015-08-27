@@ -18,6 +18,12 @@ class RootTask
 
   constructor: -> return super
 
+class EchoTask
+  register EchoTask
+
+  constructor: -> return super
+  _executeSync: sinon.spy (aOptions)->aOptions
+
 class SimpleTask
   register SimpleTask, RootTask
   aliases SimpleTask, 'Simple', 'single'
@@ -44,7 +50,9 @@ class A2Task
   _executeSync: (aOptions)-> 'a2:' + super aOptions
 
 describe 'Task', ->
-  beforeEach ->SimpleTask::_executeSync.reset()
+  beforeEach ->
+    SimpleTask::_executeSync.reset()
+    EchoTask::_executeSync.reset()
 
   describe 'path', ->
     it 'should get path() correctly', ->
@@ -117,6 +125,23 @@ describe 'Task', ->
       expect(SimpleTask::_executeSync).be.calledWith one:1, two:2
       expect(result).be.equal 'a2:2'
 
+    it 'should pass a single argument(non-object&string) directly', ->
+      task = Task 'Echo'
+      expect(task).be.instanceOf EchoTask
+      result = task.executeSync 123
+      expect(EchoTask::_executeSync).be.calledOnce
+      expect(EchoTask::_executeSync).be.calledWith 123
+      expect(result).be.equal 123
+
+    it 'should pass a single string argument directly', ->
+      task = Task 'Echo'
+      expect(task).be.instanceOf EchoTask
+      # MUST PASS an EMPTY name to avoid confuse the first argument is a name or argument.
+      result = task.executeSync 'hi load', ''
+      expect(EchoTask::_executeSync).be.calledOnce
+      expect(EchoTask::_executeSync).be.calledWith 'hi load'
+      expect(result).be.equal 'hi load'
+
   describe 'execute', ->
     it 'should run the simple task via default', (done)->
       task = Task 'Simple'
@@ -169,4 +194,23 @@ describe 'Task', ->
           expect(result).be.equal 'a2:2'
         done(err)
 
+    it 'should pass a single argument(non-object&string) directly', (done)->
+      task = Task 'Echo'
+      expect(task).be.instanceOf EchoTask
+      task.execute 123, (err, result)->
+        unless err
+          expect(EchoTask::_executeSync).be.calledOnce
+          expect(EchoTask::_executeSync).be.calledWith 123
+          expect(result).be.equal 123
+        done(err)
 
+    it 'should pass a single string argument directly', (done)->
+      task = Task 'Echo'
+      expect(task).be.instanceOf EchoTask
+      # MUST PASS an EMPTY name to avoid confuse the first argument is a name or argument.
+      task.execute 'hi load', '', (err, result)->
+        unless err
+          expect(EchoTask::_executeSync).be.calledOnce
+          expect(EchoTask::_executeSync).be.calledWith 'hi load'
+          expect(result).be.equal 'hi load'
+        done(err)
