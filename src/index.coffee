@@ -74,4 +74,16 @@ module.exports  = class Task
     vTask = if aName then @get(aName) else @
     aOptions = vTask.mergeTo(aOptions) if !aOptions? or typeof aOptions == 'object'
     vTask._execute(aOptions, done)
+  _inspect: (debug)->
+    result = @displayName()
+    result = '"' + result + '"'
+    if debug
+      vAttrs = JSON.stringify(@).slice(1,-1)
+      result += ': ' + vAttrs if vAttrs
+    result
+  inspect: (debug)->
+    debug ?= @debug
+    name  = @_inspect(debug)
+    name = ' ' + name if name
+    '<Task'+ name + '>'
 

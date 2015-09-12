@@ -214,3 +214,20 @@ describe 'Task', ->
           expect(EchoTask::_executeSync).be.calledWith 'hi load'
           expect(result).be.equal 'hi load'
         done(err)
+
+  describe 'inspect', ->
+    it 'should inspect via default', ->
+      task = Task 'Simple'
+      result = task.inspect()
+      expect(result).to.be.equal '<Task "Simple">'
+
+    it 'should inspect via debug', ->
+      task = Task.create 'Simple', one:124
+      result = task.inspect(true)
+      expect(result).to.be.equal '<Task "Simple": "one":124>'
+
+    it 'should inspect via debug property', ->
+      task = Task.create 'Simple', one:124
+      task.debug = true
+      result = task.inspect()
+      expect(result).to.be.equal '<Task "Simple": "one":124>'
