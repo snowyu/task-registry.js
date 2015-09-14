@@ -11,6 +11,7 @@ The hierarchical task registry collects tasks to execute synchronously or asynch
 * It could register a task.
 * It could define the attributes of the task.
 * It chould set/change the attributes' default value of the task.
+* It chould pass options object argument to the task to execute.
 * It could get a task via path name or relative name.
 * It could execute a task synchronously or asynchronously.
 * It could be hierarchical tasks.
