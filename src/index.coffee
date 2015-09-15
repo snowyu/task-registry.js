@@ -4,6 +4,12 @@ isInheritedFrom = require 'inherits-ex/lib/isInheritedFrom'
 setImmediate    = setImmediate || process.nextTick
 isFunction      = (arg)->typeof arg == 'function'
 isString        = (arg)->typeof arg == 'string'
+isArray         = Array.isArray
+isObject        = (arg)->
+  result = !isArray arg
+  if result
+    result = typeof arg == 'object'
+  result
 getObjectKeys   = Object.keys
 
 module.exports  = class Task
@@ -79,14 +85,15 @@ module.exports  = class Task
     result = @displayName()
     result = '"' + result + '"'
     if debug
-      if aOptions
-        v = {}
-        for key in getObjectKeys @getProperties()
-          v[key] = aOptions[key] if aOptions.hasOwnProperty key
-        aOptions = v
+      if aOptions?
+        if isObject aOptions
+          v = {}
+          for key in getObjectKeys @getProperties()
+            v[key] = aOptions[key] if aOptions.hasOwnProperty key
+          aOptions = v
       else
         aOptions = @
-      vAttrs = JSON.stringify(@toObject aOptions).slice(1,-1)
+      vAttrs = JSON.stringify(aOptions).slice(1,-1)
       result += ': ' + vAttrs if vAttrs
     result
   inspect: (debug, aOptions)->

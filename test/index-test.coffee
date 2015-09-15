@@ -226,10 +226,15 @@ describe 'Task', ->
       result = task.inspect(true)
       expect(result).to.be.equal '<Task "Simple": "one":124>'
 
-    it 'should inspect via debug and options', ->
+    it 'should inspect via debug and obj options', ->
       task = Task.create 'Simple', one:124
       result = task.inspect(true, one:10, two:2)
       expect(result).to.be.equal '<Task "Simple": "one":10>'
+
+    it 'should inspect via debug and customized options', ->
+      task = Task.create 'Simple', one:124
+      result = task.inspect(true, [23,2])
+      expect(result).to.be.equal '<Task "Simple": 23,2>'
 
     it 'should inspect via debug property', ->
       task = Task.create 'Simple', one:124
