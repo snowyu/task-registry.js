@@ -4,6 +4,7 @@ isInheritedFrom = require 'inherits-ex/lib/isInheritedFrom'
 setImmediate    = setImmediate || process.nextTick
 isFunction      = (arg)->typeof arg == 'function'
 isString        = (arg)->typeof arg == 'string'
+getObjectKeys   = Object.keys
 
 module.exports  = class Task
   factory Task
@@ -74,16 +75,23 @@ module.exports  = class Task
     vTask = if aName then @get(aName) else @
     aOptions = vTask.mergeTo(aOptions) if !aOptions? or typeof aOptions == 'object'
     vTask._execute(aOptions, done)
-  _inspect: (debug)->
+  _inspect: (debug, aOptions)->
     result = @displayName()
     result = '"' + result + '"'
     if debug
-      vAttrs = JSON.stringify(@).slice(1,-1)
+      if aOptions
+        v = {}
+        for key in getObjectKeys @getProperties()
+          v[key] = aOptions[key] if aOptions.hasOwnProperty key
+        aOptions = v
+      else
+        aOptions = @
+      vAttrs = JSON.stringify(@toObject aOptions).slice(1,-1)
       result += ': ' + vAttrs if vAttrs
     result
-  inspect: (debug)->
+  inspect: (debug, aOptions)->
     debug ?= @debug
-    name  = @_inspect(debug)
+    name  = @_inspect(debug, aOptions)
     name = ' ' + name if name
     '<Task'+ name + '>'
 
