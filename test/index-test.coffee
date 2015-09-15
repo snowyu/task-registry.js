@@ -226,7 +226,7 @@ describe 'Task', ->
       result = task.inspect(true)
       expect(result).to.be.equal '<Task "Simple": "one":124>'
 
-    it.only 'should inspect via debug and options', ->
+    it 'should inspect via debug and options', ->
       task = Task.create 'Simple', one:124
       result = task.inspect(true, one:10, two:2)
       expect(result).to.be.equal '<Task "Simple": "one":10>'
