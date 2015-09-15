@@ -61,9 +61,12 @@ module.exports  = class Task
       done err, result
   executeSync: (aOptions, aName)->
     if arguments.length is 1 and isString aOptions
-      aName = aOptions
-      aOptions = null
-    vTask = if aName then @get(aName) else @
+      vTask = @get aOptions
+      if vTask
+        aName = aOptions
+        aOptions = null
+    unless vTask
+      vTask = if aName then @get(aName) else @
     aOptions = vTask.mergeTo(aOptions) if !aOptions? or typeof aOptions == 'object'
     vTask._executeSync(aOptions)
   execute: (aOptions, aName, done)->
@@ -73,12 +76,15 @@ module.exports  = class Task
     else if arguments.length is 2
       done = aName
       if isString aOptions
-        aName = aOptions
-        aOptions = null
+        vTask = @get aOptions
+        if vTask
+          aName = aOptions
+          aOptions = null
       else
         aName = null
 
-    vTask = if aName then @get(aName) else @
+    unless vTask
+      vTask = if aName then @get(aName) else @
     aOptions = vTask.mergeTo(aOptions) if !aOptions? or typeof aOptions == 'object'
     vTask._execute(aOptions, done)
   _inspect: (debug, aOptions)->
