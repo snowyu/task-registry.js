@@ -89,7 +89,7 @@ module.exports  = class Task
         if isObject aOptions
           v = {}
           for key in getObjectKeys @getProperties()
-            v[key] = aOptions[key] if aOptions.hasOwnProperty key
+            v[key] = aOptions[key] if aOptions[key]?
           aOptions = v
       else
         aOptions = @
