@@ -50,7 +50,9 @@ module.exports  = class Task
         result = Task._get(s+aName, aOptions)
     result
 
-  constructor: (aName, aOptions)->return super
+  constructor: (aName, aOptions)->
+    result = super
+    return result
   ### !pragma coverage-skip-next ###
   _executeSync: (aOptions)->throw new Error('not implement executeSync')
   _execute: (aOptions, done)->
@@ -61,12 +63,12 @@ module.exports  = class Task
       done err, result
   executeSync: (aOptions, aName)->
     if arguments.length is 1 and isString aOptions
-      vTask = @get aOptions
+      vTask = @getFactoryItem aOptions
       if vTask
         aName = aOptions
         aOptions = null
     unless vTask
-      vTask = if aName then @get(aName) else @
+      vTask = if aName then @getFactoryItem(aName) else @
     aOptions = vTask.mergeTo(aOptions) if !aOptions? or typeof aOptions == 'object'
     vTask._executeSync(aOptions)
   execute: (aOptions, aName, done)->
@@ -76,7 +78,7 @@ module.exports  = class Task
     else if arguments.length is 2
       done = aName
       if isString aOptions
-        vTask = @get aOptions
+        vTask = @getFactoryItem aOptions
         if vTask
           aName = aOptions
           aOptions = null
@@ -84,7 +86,7 @@ module.exports  = class Task
         aName = null
 
     unless vTask
-      vTask = if aName then @get(aName) else @
+      vTask = if aName then @getFactoryItem(aName) else @
     aOptions = vTask.mergeTo(aOptions) if !aOptions? or typeof aOptions == 'object'
     vTask._execute(aOptions, done)
   _inspect: (debug, aOptions)->

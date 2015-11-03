@@ -27,9 +27,9 @@
     "klass"
   ],
   "dependencies": {
-    "custom-factory": "^1.4.14",
-    "inherits-ex": "^1.1.4",
-    "property-manager": "^0.10.2"
+    "custom-factory": "~1.5.0",
+    "inherits-ex": "~1.1.4",
+    "property-manager": "~0.10.11"
   },
   "devDependencies": {
     "chai": "~3.2.0",

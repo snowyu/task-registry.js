@@ -76,11 +76,11 @@ describe 'Task', ->
       expect(result).be.instanceOf A2Task
     it 'should get task via instance', ->
       root = Task 'Root'
-      simple = root.get 'Simple'
+      simple = root.getFactoryItem 'Simple'
       expect(simple).be.instanceOf SimpleTask
-      result = root.get 'Simple/Abc'
+      result = root.getFactoryItem 'Simple/Abc'
       expect(result).be.instanceOf AbcTask
-      result = simple.get 'Abc'
+      result = simple.getFactoryItem 'Abc'
       expect(result).be.instanceOf AbcTask
 
   describe 'executeSync', ->
