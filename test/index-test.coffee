@@ -242,26 +242,27 @@ describe 'Task', ->
       result = task.inspect()
       expect(result).to.be.equal '<Task "Simple": "one":124>'
   describe 'defineFunction', ->
-    fnSync = sinon.spy -> 'hi'
     beforeEach ->
-      Task.defineFunction 'HiFnTask', fnSync
-      fnSync.reset()
     afterEach ->
-      Task.unregister('/HiFn').should.be.ok
     it 'should define the non-params function as a new task', ->
+      fnSync = sinon.spy -> 'hi'
+      Task.defineFunction 'HiFnTask', fnSync
       task = Task 'HiFn'
       expect(task.executeSync()).to.be.equal 'hi'
       expect(fnSync).to.be.calledOnce
       expect(fnSync).to.be.calledOn task
+      Task.unregister('/HiFn').should.be.ok
     it 'should define the non-params function as a new task with specified self', ->
+      fnSync = sinon.spy -> 'hi'
       self = {}
       Task.defineFunction 'HiFn1Task', self:self, fnSync:fnSync
+      try
       task = Task 'HiFn1'
       expect(task.executeSync()).to.be.equal 'hi'
       expect(fnSync).to.be.calledOnce
       expect(fnSync).to.be.calledOn self
       Task.unregister('/HiFn1').should.be.ok
-    it 'should define the non-params function as a new task async', (done)->
+    it 'should define the non-params function as a new task asynchronously', (done)->
       fn = sinon.spy (cb)-> cb(null, 'hi')
       Task.defineFunction 'HiFn1Task', fn: fn
       task = Task 'HiFn1'
@@ -271,9 +272,30 @@ describe 'Task', ->
         expect(fn).to.be.calledOn task
         Task.unregister('/HiFn1').should.be.ok
         done(err)
+    it 'should define the non-params function as a new task with specified self asynchronously', (done)->
+      fn = sinon.spy (cb)-> cb(null, 'hi')
+      self = {}
+      Task.defineFunction 'HiFn1Task', self:self, fn: fn
+      task = Task 'HiFn1'
+      task.execute (err, result)->
+        expect(result).to.be.equal 'hi'
+        expect(fn).to.be.calledOnce
+        expect(fn).to.be.calledOn self
+        Task.unregister('/HiFn1').should.be.ok
+        done(err)
     it 'should define the function with params as a new task', ->
       fn = sinon.spy (a,b)-> a+b
       Task.defineFunction 'AddFnTask', params:[{name:'a'},{name:'b'}], fnSync: fn
       task = Task 'AddFn', a:1,b:20
       expect(task.executeSync()).to.be.equal 21
       expect(fn).to.be.calledOnce
+      Task.unregister('/AddFn').should.be.ok
+    it 'should define the function with params as a new task asynchronously', (done)->
+      fn = sinon.spy (a,b, cb)-> cb(null, a+b)
+      Task.defineFunction 'AddFnTask', params:[{name:'a'},{name:'b'}], fn: fn
+      task = Task 'AddFn', a:1,b:20
+      task.execute (err, result)->
+        expect(result).to.be.equal 21
+        expect(fn).to.be.calledOnce
+        Task.unregister('/AddFn').should.be.ok
+        done(err)
