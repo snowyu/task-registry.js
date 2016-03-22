@@ -290,6 +290,13 @@ describe 'Task', ->
       expect(task.executeSync()).to.be.equal 21
       expect(fn).to.be.calledOnce
       Task.unregister('/AddFn').should.be.ok
+    it 'should define the function with param names as a new task', ->
+      fn = sinon.spy (a,b)-> a+b
+      Task.defineFunction 'AddFnTask', params:['a', 'b'], fnSync: fn
+      task = Task 'AddFn', a:1,b:20
+      expect(task.executeSync()).to.be.equal 21
+      expect(fn).to.be.calledOnce
+      Task.unregister('/AddFn').should.be.ok
     it 'should define the function with params as a new task asynchronously', (done)->
       fn = sinon.spy (a,b, cb)-> cb(null, a+b)
       Task.defineFunction 'AddFnTask', params:[{name:'a'},{name:'b'}], fn: fn

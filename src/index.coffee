@@ -57,7 +57,9 @@ module.exports  = class Task
   # aOptions: Object
   #   * fnSync(params...): the sync function
   #   * fn(params..., done): the async function
-  #   * params: the parameters of this function [{name:'', type:'', value:''},{}]
+  #   * params Array: the parameters of this function
+  #     * [{name:'', type:'', value:''},{}]
+  #     * ['theParamName',...]
   #     * Note: the name first char should not be '_'
   #   * self: (optional) the self object to call the function
   #   * alias: ....
@@ -78,11 +80,16 @@ module.exports  = class Task
         vAttrs = {}
         vParams = []
         for p in aOptions.params
-          if isString(p.name) and p.name.length and p.name[0] isnt Task::nonExported1stChar
-            vAttrs[p.name] = p
-            vParams.push p.name
+          if isString p
+            vName = p
+            p = {}
+          else if isObject p
+            vName = p.name
+          if isString(vName) and vName.length and vName[0] isnt Task::nonExported1stChar
+            vAttrs[vName] = p
+            vParams.push vName
           else
-            throw new TypeError 'Illegal parameter name:' + p.name
+            throw new TypeError 'Illegal parameter name:' + vName
         if vParams.length
           #vAttrs['_params'] = type: 'Array', value: vParams
           result::_params = vParams
