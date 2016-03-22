@@ -22,6 +22,48 @@ Note: the registered name is case-sensitive.
 
 ## Usage
 
+### Create a Task via the function
+
+```js
+var Task      = require('task-registry')
+
+// create a task via the non-params synchronous function.
+Task.defineFunction('SayHiTask', function(){return 'hi'})
+Task('SayHi').executeSync()
+//=hi
+
+// create a task via the synchronous function with params.
+function echo(value) {return value}
+Task.defineFunction('EchoTask', {params:['value'], fnSync: echo})
+Task('Echo').executeSync({value: 'hi world!'})
+//=hi world!
+
+
+// create a task via the function with params.
+function add(a,b, done) {done(null, a+b)}
+function addSync(a,b) {return a+b}
+Task.defineFunction('AddTask', {params:[{name:'a',type:'Number'},{name:'b',type:'Number'}]
+  , fnSync: addSync, fn: add})
+Task('Add').execute({a:1,b:10}, function(err,result){
+  console.log(result)
+})
+//=11
+
+// create a task via the method.
+Array.prototype.sum = function(){
+  return this.reduce(function(a,b){return a+b}, 0)
+}
+Task.defineFunction('SumTask', {fnSync: Array.prototype.sum, self: [1,10]})
+Task('Sum').execute(function(err,result){
+  console.log(result)
+})
+//=11
+Task('Sum').executeSync({_self:[1,2]})
+//=3
+```
+
+### Create a Task class
+
 ```coffee
 Task      = require 'task-registry'
 register  = Task.register
@@ -174,6 +216,8 @@ the derived task should overwrite these methods to execute a task:
       * `fnSync` *Function*: execute the function synchronously. *required*
       * `fn` *Function*: execute the function asynchronously. *optional*
       * `params` *Array*: the parameters of this function [{name:'', type:'', value:''},{}]
+        * [{name:'', type:'', value:''},{}] or
+        * ['theParamName',...]
         * Note: the first char of the param name should not be '_'
       * `self`: (optional) the self object to call the function
       * `alias` *String|ArrayOf String*: the task aliases.
