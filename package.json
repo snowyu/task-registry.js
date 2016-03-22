@@ -29,7 +29,7 @@
   "dependencies": {
     "custom-factory": "~1.5.0",
     "inherits-ex": "~1.1.4",
-    "property-manager": "~0.10.11"
+    "property-manager": "~0.10.12"
   },
   "devDependencies": {
     "chai": "~3.2.0",
@@ -43,11 +43,11 @@
     "grunt-newer": "~0.8.0",
     "grunt-release": "~0.9.0",
     "istanbul": "^0.3.18",
-    "mocha": "~2.1.0",
+    "mocha": "~2.2.5",
     "pre-commit": "~1.1.1",
     "rimraf": "~2.2.8",
     "shasum": "1.0.0",
-    "sinon": "~1.16.1",
+    "sinon": "~1.15.4",
     "sinon-chai": "~2.8.0"
   },
   "scripts": {
