@@ -242,21 +242,34 @@ describe 'Task', ->
       result = task.inspect()
       expect(result).to.be.equal '<Task "Simple": "one":124>'
   describe 'defineFunction', ->
+    fnSync = sinon.spy -> 'hi'
+    beforeEach ->
+      Task.defineFunction 'HiFnTask', fnSync
+      fnSync.reset()
+    afterEach ->
+      Task.unregister('/HiFn').should.be.ok
     it 'should define the non-params function as a new task', ->
-      fn = sinon.spy -> 'hi'
-      Task.defineFunction 'HiFnTask', fn
       task = Task 'HiFn'
       expect(task.executeSync()).to.be.equal 'hi'
-      expect(fn).to.be.calledOnce
-      Task.unregister('/HiFn').should.be.ok
+      expect(fnSync).to.be.calledOnce
+      expect(fnSync).to.be.calledOn task
+    it 'should define the non-params function as a new task with specified self', ->
+      self = {}
+      Task.defineFunction 'HiFn1Task', self:self, fnSync:fnSync
+      task = Task 'HiFn1'
+      expect(task.executeSync()).to.be.equal 'hi'
+      expect(fnSync).to.be.calledOnce
+      expect(fnSync).to.be.calledOn self
+      Task.unregister('/HiFn1').should.be.ok
     it 'should define the non-params function as a new task async', (done)->
       fn = sinon.spy (cb)-> cb(null, 'hi')
-      Task.defineFunction 'HiFnTask', fn: fn
-      task = Task 'HiFn'
+      Task.defineFunction 'HiFn1Task', fn: fn
+      task = Task 'HiFn1'
       task.execute (err, result)->
         expect(result).to.be.equal 'hi'
         expect(fn).to.be.calledOnce
-        Task.unregister('/HiFn').should.be.ok
+        expect(fn).to.be.calledOn task
+        Task.unregister('/HiFn1').should.be.ok
         done(err)
     it 'should define the function with params as a new task', ->
       fn = sinon.spy (a,b)-> a+b

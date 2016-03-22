@@ -84,16 +84,14 @@ module.exports  = class Task
           else
             throw new TypeError 'Illegal parameter name:' + p.name
         if vParams.length
-          vAttrs['_params'] = type: 'Array', value: vParams
+          #vAttrs['_params'] = type: 'Array', value: vParams
+          result::_params = vParams
           aParentTask.defineProperties result, vAttrs
-      if aOptions.self
-        vAttrs = _self: {type: 'Object', value: aOptions.self}
-        aParentTask.defineProperties result, vAttrs, false
+      result::_self = aOptions.self if aOptions.self
 
       vFn = aOptions.fnSync
       if isFunction vFn
-        vAttrs = _fnSync: {type: 'Object', value: vFn}
-        aParentTask.defineProperties result, vAttrs, false
+        result::_fnSync = vFn
         result::_executeSync = (aOptions)->
           vArgs = []
           if isArray @_params
@@ -111,8 +109,7 @@ module.exports  = class Task
 
       vFn = aOptions.fn
       if isFunction vFn
-        vAttrs = _fn: {type: 'Object', value: vFn}
-        aParentTask.defineProperties result, vAttrs, false
+        result::_fn = vFn
         result::_execute = (aOptions, done)->
           vArgs = []
           if isArray @_params
