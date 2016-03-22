@@ -168,6 +168,7 @@ the derived task should overwrite these methods to execute a task:
   * `get(aName, aOptions)`: get the singleton task instance via `aName` and apply(re-initialize) the aOptions to the task.
   * `forEach(callback)`: iterate all the singleton task instances to callback.
     * `callback` *function(instance, name)*
+  * `defineFunction(aName, aOptions, aParentTask = Task)`: define a function as a new task quickly.
 * instance methods
   * `get(aName, aOptions)`: get the singleton task instance via `aName` and apply(re-initialize) the aOptions to the task.
   * `register(aClass[, aOptions])`: register a class to itself.

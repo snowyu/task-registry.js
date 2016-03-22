@@ -1,6 +1,7 @@
 factory         = require 'custom-factory'
 propertyManager = require 'property-manager/ability'
 isInheritedFrom = require 'inherits-ex/lib/isInheritedFrom'
+createCtor      = require 'inherits-ex/lib/createCtor'
 setImmediate    = setImmediate || process.nextTick
 isFunction      = (arg)->typeof arg == 'function'
 isString        = (arg)->typeof arg == 'string'
@@ -48,6 +49,88 @@ module.exports  = class Task
       if s
         s += '/' if s[s.length-1] isnt '/'
         result = Task._get(s+aName, aOptions)
+    result
+
+  ###
+  # define a new task through out a function.
+  # aName: the task name
+  # aOptions: Object
+  #   * fnSync(params...): the sync function
+  #   * fn(params..., done): the async function
+  #   * params: the parameters of this function [{name:'', type:'', value:''},{}]
+  #     * Note: the name first char should not be '_'
+  #   * self: (optional) the self object to call the function
+  #   * alias: ....
+  # aParentTask: (optional) register to the class, defaults to the Task class.
+  # return the defined task class if successful.
+  ###
+  @defineFunction: (aName, aOptions, aParentTask = Task)->
+    if aName and aOptions
+      aOptions = fnSync: aOptions if isFunction aOptions
+
+      throw new TypeError 'missing function arguments' unless aOptions.fn or aOptions.fnSync
+
+      result = createCtor aName # create a new class dynamically.
+      aParentTask.register result
+      vAliases = aOptions.aliases or aOptions.alias
+      aParentTask.aliases vAliases if vAliases
+      if isArray aOptions.params
+        vAttrs = {}
+        vParams = []
+        for p in aOptions.params
+          if isString(p.name) and p.name.length and p.name[0] isnt Task::nonExported1stChar
+            vAttrs[p.name] = p
+            vParams.push p.name
+          else
+            throw new TypeError 'Illegal parameter name:' + p.name
+        if vParams.length
+          vAttrs['_params'] = type: 'Array', value: vParams
+          aParentTask.defineProperties result, vAttrs
+      if aOptions.self
+        vAttrs = _self: {type: 'Object', value: aOptions.self}
+        aParentTask.defineProperties result, vAttrs, false
+
+      vFn = aOptions.fnSync
+      if isFunction vFn
+        vAttrs = _fnSync: {type: 'Object', value: vFn}
+        aParentTask.defineProperties result, vAttrs, false
+        result::_executeSync = (aOptions)->
+          vArgs = []
+          if isArray @_params
+            for vName in @_params
+              vArgs.push aOptions[vName]
+          @_fnSync.apply (@_self || @), vArgs
+      # result::_executeSync = ((aFn)->
+      #   (aOptions)->
+      #     vArgs = []
+      #     if isArray @_params
+      #       for vName in @_params
+      #         vArgs.push aOptions[vName]
+      #     aFn.apply (@_self || @), vArgs
+      # )(vFn) if vFn
+
+      vFn = aOptions.fn
+      if isFunction vFn
+        vAttrs = _fn: {type: 'Object', value: vFn}
+        aParentTask.defineProperties result, vAttrs, false
+        result::_execute = (aOptions, done)->
+          vArgs = []
+          if isArray @_params
+            for vName in @_params
+              vArgs.push aOptions[vName]
+          vArgs.push done
+          @_fn.apply (@_self || @), vArgs
+      # result::_execute = ((aFn)->
+      #   (aOptions, done)->
+      #     vArgs = []
+      #     if isArray @_params
+      #       for vName in @_params
+      #         vArgs.push aOptions[vName]
+      #     vArgs.push done
+      #     aFn.apply (@_self || @), vArgs
+      # )(vFn) if vFn
+    else
+      throw new TypeError 'missing arguments'
     result
 
   constructor: (aName, aOptions)->

@@ -241,3 +241,26 @@ describe 'Task', ->
       task.debug = true
       result = task.inspect()
       expect(result).to.be.equal '<Task "Simple": "one":124>'
+  describe 'defineFunction', ->
+    it 'should define the non-params function as a new task', ->
+      fn = sinon.spy -> 'hi'
+      Task.defineFunction 'HiFnTask', fn
+      task = Task 'HiFn'
+      expect(task.executeSync()).to.be.equal 'hi'
+      expect(fn).to.be.calledOnce
+      Task.unregister('/HiFn').should.be.ok
+    it 'should define the non-params function as a new task async', (done)->
+      fn = sinon.spy (cb)-> cb(null, 'hi')
+      Task.defineFunction 'HiFnTask', fn: fn
+      task = Task 'HiFn'
+      task.execute (err, result)->
+        expect(result).to.be.equal 'hi'
+        expect(fn).to.be.calledOnce
+        Task.unregister('/HiFn').should.be.ok
+        done(err)
+    it 'should define the function with params as a new task', ->
+      fn = sinon.spy (a,b)-> a+b
+      Task.defineFunction 'AddFnTask', params:[{name:'a'},{name:'b'}], fnSync: fn
+      task = Task 'AddFn', a:1,b:20
+      expect(task.executeSync()).to.be.equal 21
+      expect(fn).to.be.calledOnce
