@@ -252,7 +252,7 @@ describe 'Task', ->
       expect(fnSync).to.be.calledOnce
       expect(fnSync).to.be.calledOn task
       Task.unregister('/HiFn').should.be.ok
-    it.only 'should define the function with alias simply as a new task', ->
+    it 'should define the function with alias simply as a new task', ->
       fnSync = sinon.spy -> 'hi'
       Task.defineFunction ['HiFnTask', 'hhhh', 'hah'], fnSync
       task = Task 'hhhh'
