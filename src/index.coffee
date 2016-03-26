@@ -71,11 +71,19 @@ module.exports  = class Task
       aOptions = fnSync: aOptions if isFunction aOptions
 
       throw new TypeError 'missing function arguments' unless aOptions.fn or aOptions.fnSync
+      if isArray(aName)
+        throw new TypeError 'missing name argument' unless aName.length and aName[0]
+        vAliases = aName
+        aName = aName[0]
+        vAliases.shift()
 
       result = createCtor aName # create a new class dynamically.
       aParentTask.register result
-      vAliases = aOptions.aliases or aOptions.alias
-      aParentTask.aliases vAliases if vAliases
+      vAliases = aOptions.aliases or aOptions.alias unless vAliases
+      if vAliases
+        vAliases = [vAliases] unless isArray vAliases
+        vAliases.unshift result
+        aParentTask.aliases.apply aParentTask, vAliases
       if isArray aOptions.params
         vAttrs = {}
         vParams = []

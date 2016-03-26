@@ -252,6 +252,26 @@ describe 'Task', ->
       expect(fnSync).to.be.calledOnce
       expect(fnSync).to.be.calledOn task
       Task.unregister('/HiFn').should.be.ok
+    it.only 'should define the function with alias simply as a new task', ->
+      fnSync = sinon.spy -> 'hi'
+      Task.defineFunction ['HiFnTask', 'hhhh', 'hah'], fnSync
+      task = Task 'hhhh'
+      expect(task).to.be.instanceOf Task
+      task = Task 'hah'
+      expect(task).to.be.instanceOf Task
+      expect(task.executeSync()).to.be.equal 'hi'
+      expect(fnSync).to.be.calledOnce
+      expect(fnSync).to.be.calledOn task
+      Task.unregister('/HiFn').should.be.ok
+    it 'should define the function with alias as a new task', ->
+      fnSync = sinon.spy -> 'hi'
+      Task.defineFunction 'HiFnTask', alias: 'hhh', fnSync: fnSync
+      task = Task 'hhh'
+      expect(task).to.be.instanceOf Task
+      expect(task.executeSync()).to.be.equal 'hi'
+      expect(fnSync).to.be.calledOnce
+      expect(fnSync).to.be.calledOn task
+      Task.unregister('/HiFn').should.be.ok
     it 'should define the non-params function as a new task with specified self', ->
       fnSync = sinon.spy -> 'hi'
       self = {}

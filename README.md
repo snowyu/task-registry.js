@@ -34,8 +34,8 @@ Task('SayHi').executeSync()
 
 // create a task via the synchronous function with params.
 function echo(value) {return value}
-Task.defineFunction('EchoTask', {params:['value'], fnSync: echo})
-Task('Echo').executeSync({value: 'hi world!'})
+Task.defineFunction(['EchoTask', 'echo', 'ping'], {params:['value'], fnSync: echo})
+Task('ping').executeSync({value: 'hi world!'})
 //=hi world!
 
 
@@ -211,7 +211,8 @@ the derived task should overwrite these methods to execute a task:
   * `forEach(callback)`: iterate all the singleton task instances to callback.
     * `callback` *function(instance, name)*
   * `defineFunction(aName, aOptions, aParentTask = Task)`: define a function as a new task quickly.
-    * `aName` *String*: the Task Class name to define. *required*
+    * `aName` *String|ArrayOf String*: the Task Class name to define. *required*
+      * if it's array, the first is the task class name, and the others are the aliases.
     * `aOptions` *Object|Function*: the opitions object or the function synchronously. *required*
       * `fnSync` *Function*: execute the function synchronously. *required*
       * `fn` *Function*: execute the function asynchronously. *optional*
